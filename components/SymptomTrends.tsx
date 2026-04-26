@@ -1,69 +1,77 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { G, Circle } from 'react-native-svg';
+import { Palette } from '@/constants/theme';
 
 export const SymptomTrends = () => {
   const symptoms = [
-    { name: 'Mood', color: '#FFB74D', percentage: 40 },
-    { name: 'Acne', color: '#4DB6AC', percentage: 25 },
-    { name: 'Fatigue', color: '#9575CD', percentage: 20 },
-    { name: 'Bloating', color: '#F06292', percentage: 15 },
+    { name: 'Bloating', color: '#B39DDB', percentage: 31, top: '15%', right: '-10%' },
+    { name: 'Fatigue', color: '#EF9A9A', percentage: 21, bottom: '-5%', right: '20%' },
+    { name: 'Acne', color: '#80CBC4', percentage: 17, bottom: '5%', left: '-5%' },
+    { name: 'Mood', color: '#FCE4EC', percentage: 30, top: '10%', left: '-5%' },
   ];
 
-  const size = 130;
-  const strokeWidth = 16;
+  const size = 220;
+  const strokeWidth = 40;
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   
   let currentOffset = 0;
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>Symptom Trends</Text>
-      <Text style={styles.subtitle}>Compared to last cycle</Text>
-      
-      <View style={styles.contentContainer}>
-        <View style={styles.donutContainer}>
-          <Svg width={size} height={size}>
-            <G rotation="-90" origin={`${size / 2}, ${size / 2}`}>
-              {symptoms.map((symptom, index) => {
-                const strokeDashoffset = circumference - (symptom.percentage / 100) * circumference;
-                const rotation = (currentOffset / 100) * 360;
-                currentOffset += symptom.percentage;
-                
-                return (
-                  <Circle
-                    key={index}
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke={symptom.color}
-                    strokeWidth={strokeWidth}
-                    strokeDasharray={circumference}
-                    strokeDashoffset={strokeDashoffset}
-                    strokeLinecap="round"
-                    transform={`rotate(${rotation}, ${size / 2}, ${size / 2})`}
-                    fill="transparent"
-                  />
-                );
-              })}
-            </G>
-          </Svg>
-          <View style={styles.centerTextContainer}>
-            <Text style={styles.totalText}>100%</Text>
-          </View>
-        </View>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Body Signals</Text>
+      <View style={styles.card}>
+        <Text style={styles.title}>Symptom Trends</Text>
+        <Text style={styles.subtitle}>Compared to last cycle</Text>
         
-        <View style={styles.labelsContainer}>
-          {symptoms.map((symptom, index) => (
-            <View key={index} style={styles.labelRow}>
-              <View style={[styles.dot, { backgroundColor: symptom.color }]} />
-              <View>
-                <Text style={styles.labelText}>{symptom.name}</Text>
-                <Text style={styles.percentageText}>{symptom.percentage}%</Text>
+        <View style={styles.chartContainer}>
+          <View style={styles.donutWrapper}>
+            <Svg width={size} height={size}>
+              <G rotation="-90" origin={`${size / 2}, ${size / 2}`}>
+                {symptoms.map((symptom, index) => {
+                  const strokeDashoffset = circumference - (symptom.percentage / 100) * circumference;
+                  const rotation = (currentOffset / 100) * 360;
+                  currentOffset += symptom.percentage;
+                  
+                  return (
+                    <Circle
+                      key={index}
+                      cx={size / 2}
+                      cy={size / 2}
+                      r={radius}
+                      stroke={symptom.color}
+                      strokeWidth={strokeWidth}
+                      strokeDasharray={circumference}
+                      strokeDashoffset={strokeDashoffset}
+                      transform={`rotate(${rotation}, ${size / 2}, ${size / 2})`}
+                      fill="transparent"
+                    />
+                  );
+                })}
+              </G>
+            </Svg>
+
+            {/* Overlapping circular labels */}
+            {symptoms.map((symptom, index) => (
+              <View 
+                key={index} 
+                style={[
+                  styles.labelBubble, 
+                  { 
+                    top: symptom.top, 
+                    right: symptom.right, 
+                    bottom: symptom.bottom, 
+                    left: symptom.left,
+                    shadowColor: symptom.color 
+                  }
+                ]}
+              >
+                <Text style={styles.bubblePercentage}>{symptom.percentage}%</Text>
+                <Text style={styles.bubbleName}>{symptom.name}</Text>
               </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
       </View>
     </View>
@@ -71,11 +79,20 @@ export const SymptomTrends = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: 12,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000',
+    marginBottom: 16,
+    marginLeft: 4,
+  },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 24,
-    marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -85,58 +102,47 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1A1A1A',
+    color: '#000',
   },
   subtitle: {
-    fontSize: 14,
-    color: '#757575',
+    fontSize: 16,
+    color: '#9E9E9E',
     marginTop: 2,
-    marginBottom: 24,
+    marginBottom: 40,
   },
-  contentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 8,
-  },
-  donutContainer: {
+  chartContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 20,
+  },
+  donutWrapper: {
+    width: 220,
+    height: 220,
     position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  centerTextContainer: {
+  labelBubble: {
     position: 'absolute',
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
   },
-  totalText: {
-    fontSize: 18,
+  bubblePercentage: {
+    fontSize: 14,
     fontWeight: '700',
-    color: '#1A1A1A',
+    color: '#000',
   },
-  labelsContainer: {
-    flex: 1,
-    marginLeft: 32,
-  },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  dot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 12,
-  },
-  labelText: {
-    fontSize: 15,
-    color: '#424242',
-    fontWeight: '600',
-  },
-  percentageText: {
+  bubbleName: {
     fontSize: 12,
     color: '#757575',
-    marginTop: 1,
+    fontWeight: '500',
   },
 });

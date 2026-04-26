@@ -1,18 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withTiming,
+} from 'react-native-reanimated';
+import { Palette } from '@/constants/theme';
 
 const screenWidth = Dimensions.get('window').width;
 
 export const BodyMetabolicCard = () => {
   const [activeTab, setActiveTab] = useState<'Monthly' | 'Weekly'>('Monthly');
+  const togglePos = useSharedValue(activeTab === 'Weekly' ? 1 : 0);
+  const chartOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    togglePos.value = withSpring(activeTab === 'Weekly' ? 1 : 0, { damping: 15 });
+    chartOpacity.value = 0;
+    chartOpacity.value = withTiming(1, { duration: 500 });
+  }, [activeTab]);
+
+  const animatedToggleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: togglePos.value * 76 }],
+  }));
 
   const chartData = {
-    labels: activeTab === 'Monthly' ? ["Jan", "Feb", "Mar", "Apr"] : ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    labels: [" Jan", "Feb", "Mar", "Apr", "May"],
     datasets: [
       {
-        data: activeTab === 'Monthly' ? [65, 64.5, 63.8, 63.2] : [63.5, 63.2, 63.4, 63.1, 63.2],
-        color: (opacity = 1) => `rgba(255, 138, 101, ${opacity})`, // Warm pink/red
+        data: [35, 45, 38, 70, 55],
+        color: (opacity = 1) => `rgba(244, 143, 177, ${opacity})`, // Pink/Red line
         strokeWidth: 3
       }
     ]
@@ -22,70 +41,93 @@ export const BodyMetabolicCard = () => {
     backgroundColor: "#fff",
     backgroundGradientFrom: "#fff",
     backgroundGradientTo: "#fff",
-    decimalPlaces: 1,
-    color: (opacity = 1) => `rgba(255, 138, 101, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(117, 117, 117, ${opacity})`,
-    style: {
-      borderRadius: 16
-    },
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(244, 143, 177, ${opacity})`,
+    labelColor: (opacity = 1) => '#9E9E9E',
     propsForDots: {
-      r: "4",
+      r: "6",
       strokeWidth: "2",
-      stroke: "#FF8A65"
+      stroke: "#F48FB1", // Pink border for dots
+      fill: "#fff" // Hollow white center
     },
     propsForBackgroundLines: {
-      strokeDasharray: "",
-      stroke: "#f0f0f0",
+      strokeDasharray: "5",
+      stroke: "#E0E0E0",
       strokeWidth: 1
-    }
+    },
+    fillShadowGradient: '#F48FB1',
+    fillShadowGradientOpacity: 0.3,
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Body & Metabolic Trends</Text>
-          <Text style={styles.subtitle}>Your weight</Text>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Body & Metabolic Trends</Text>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Your weight</Text>
+            <Text style={styles.subtitle}>in kg</Text>
+          </View>
+          
+          <View style={styles.toggleContainer}>
+            <Animated.View style={[styles.toggleHighlight, animatedToggleStyle]} />
+            <TouchableOpacity 
+              style={styles.toggleButton} 
+              onPress={() => setActiveTab('Monthly')}
+            >
+              <Text style={[styles.toggleText, activeTab === 'Monthly' && styles.activeToggleText]}>Monthly</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.toggleButton} 
+              onPress={() => setActiveTab('Weekly')}
+            >
+              <Text style={[styles.toggleText, activeTab === 'Weekly' && styles.activeToggleText]}>Weekly</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        
-        <View style={styles.toggleContainer}>
-          <TouchableOpacity 
-            style={[styles.toggleButton, activeTab === 'Weekly' && styles.activeToggleButton]} 
-            onPress={() => setActiveTab('Weekly')}
-          >
-            <Text style={[styles.toggleText, activeTab === 'Weekly' && styles.activeToggleText]}>Weekly</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.toggleButton, activeTab === 'Monthly' && styles.activeToggleButton]} 
-            onPress={() => setActiveTab('Monthly')}
-          >
-            <Text style={[styles.toggleText, activeTab === 'Monthly' && styles.activeToggleText]}>Monthly</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
 
-      <View style={styles.chartContainer}>
-        <LineChart
-          data={chartData}
-          width={screenWidth - 88}
-          height={160}
-          chartConfig={chartConfig}
-          bezier
-          withInnerLines={false}
-          withOuterLines={false}
-          style={styles.chartStyle}
-        />
+        <View style={styles.chartWrapper}>
+          <View style={styles.yAxis}>
+            <Text style={styles.yLabel}>75</Text>
+            <Text style={styles.yLabel}>50</Text>
+            <Text style={styles.yLabel}>25</Text>
+          </View>
+          <View style={styles.chartContainer}>
+            <LineChart
+              data={chartData}
+              width={screenWidth - 80}
+              height={200}
+              chartConfig={chartConfig}
+              bezier
+              withInnerLines={true}
+              withOuterLines={false}
+              withHorizontalLabels={false}
+              withVerticalLines={false} // Remove vertical grid lines
+              style={styles.chart}
+              getDotColor={() => '#fff'} // Ensure center is white
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: 12,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#000',
+    marginBottom: 16,
+    marginLeft: 4,
+  },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 24,
-    marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -95,51 +137,71 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24,
+    alignItems: 'flex-start',
+    marginBottom: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
-    color: '#1A1A1A',
+    color: '#000',
   },
   subtitle: {
-    fontSize: 14,
-    color: '#757575',
+    fontSize: 18,
+    color: '#9E9E9E',
     marginTop: 2,
   },
   toggleContainer: {
     flexDirection: 'row',
     backgroundColor: '#F5F5F5',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 4,
+    width: 160,
+    position: 'relative',
+  },
+  toggleHighlight: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    width: 76,
+    height: 32,
+    backgroundColor: '#000',
+    borderRadius: 10,
   },
   toggleButton: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 8,
-  },
-  activeToggleButton: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    width: 76,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   toggleText: {
-    fontSize: 13,
-    color: '#757575',
+    fontSize: 14,
+    color: '#9E9E9E',
     fontWeight: '600',
   },
   activeToggleText: {
-    color: '#1A1A1A',
+    color: '#fff',
+  },
+  chartWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginTop: 10,
+  },
+  yAxis: {
+    height: 160,
+    justifyContent: 'space-between',
+    paddingBottom: 40,
+    marginRight: 10,
+  },
+  yLabel: {
+    fontSize: 13,
+    color: '#000', // Changed to black for better visibility
+    fontWeight: '700', // Bolder labels
   },
   chartContainer: {
-    marginTop: 10,
-    alignItems: 'center',
+    flex: 1,
+    marginLeft: 0,
   },
-  chartStyle: {
-    paddingRight: 40,
+  chart: {
+    paddingRight: 10,
   },
 });

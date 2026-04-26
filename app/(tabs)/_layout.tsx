@@ -1,89 +1,129 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-
-import { HapticTab } from '@/components/haptic-tab';
+import { View, StyleSheet, TouchableOpacity, Text, Dimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+
+const { width } = Dimensions.get('window');
+
+function CustomTabBar({ state, descriptors, navigation }: any) {
+  const insets = useSafeAreaInsets();
+  
+  return (
+    <View style={[styles.tabBarContainer, { bottom: insets.bottom + 10 }]}>
+      <View style={styles.pillContainer}>
+        {state.routes.map((route: any, index: number) => {
+          if (route.name === 'plus' || route.name === 'explore' || route.name === 'insights') return null;
+
+          const { options } = descriptors[route.key];
+          const label = options.title !== undefined ? options.title : route.name;
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          const iconName = route.name === 'home' ? 'house.fill' : 
+                           route.name === 'track' ? 'clock.fill' : 
+                           'chart.bar.fill';
+
+          return (
+            <TouchableOpacity
+              key={route.key}
+              onPress={onPress}
+              style={styles.tabItem}
+            >
+              <IconSymbol 
+                name={iconName as any} 
+                size={24} 
+                color={isFocused ? '#E67E5F' : '#9E9E9E'} 
+              />
+              <Text style={[styles.tabLabel, { color: isFocused ? '#E67E5F' : '#9E9E9E' }]}>
+                {label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
+      <TouchableOpacity style={styles.floatingPlus}>
+        <IconSymbol name="plus" size={32} color="#9E9E9E" />
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: '#FF8A65', // Primary theme color
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarStyle: {
-          height: 70,
-          paddingBottom: 10,
-          borderTopWidth: 1,
-          borderTopColor: '#F0F0F0',
-        },
       }}>
-      <Tabs.Screen
-        name="home"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={26} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="track"
-        options={{
-          title: 'Track',
-          tabBarIcon: ({ color }) => <IconSymbol size={26} name="calendar.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="plus"
-        options={{
-          title: '',
-          tabBarIcon: ({ color }) => (
-            <View style={styles.floatingButton}>
-              <IconSymbol size={32} name="plus" color="#fff" />
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Insights',
-          tabBarIcon: ({ color }) => <IconSymbol size={26} name="chart.bar.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="insights"
-        options={{
-          href: null, // Hide duplicated insights route
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          href: null, // Hide explore tab
-        }}
-      />
+      <Tabs.Screen name="home" options={{ title: 'Home' }} />
+      <Tabs.Screen name="track" options={{ title: 'Track' }} />
+      <Tabs.Screen name="index" options={{ title: 'Insights' }} />
+      <Tabs.Screen name="plus" options={{ href: null }} />
+      <Tabs.Screen name="insights" options={{ href: null }} />
+      <Tabs.Screen name="explore" options={{ href: null }} />
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  floatingButton: {
-    width: 56,
-    height: 56,
-    backgroundColor: '#FF8A65',
-    borderRadius: 28,
+  tabBarContainer: {
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    width: width,
+  },
+  pillContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    height: 80,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabLabel: {
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: '500',
+  },
+  floatingPlus: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#fff',
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
   },
 });
