@@ -1,51 +1,141 @@
-# Welcome to your Expo app 👋
+# 📊 Insights UI – React Native (Expo)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern **health insights dashboard UI** built using **React Native (Expo)**.
+This project replicates a **Figma-based design** with custom charts, smooth layouts, and clean component architecture.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Features
 
-   ```bash
-   npm install
-   ```
+* 📈 Stability Summary with trend visualization
+* 📊 Cycle Trends with segmented bar indicators
+* 📉 Body & Metabolic Trends (line chart with toggle)
+* 🍩 Symptom Trends (donut chart using SVG)
+* 🧩 Lifestyle Impact heatmap grid
+* 📱 Clean mobile-first UI with soft gradients
+* 🔁 Component-based scalable architecture
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Tech Stack
 
-In the output, you'll find options to open the app in a
+* ⚛️ React Native (Expo)
+* 📦 Expo Router
+* 📊 react-native-chart-kit
+* 🎨 react-native-svg
+* 🧠 JavaScript / TypeScript
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📂 Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+insightshmi/
+│── app/
+│   └── (tabs)/
+│       └── index.tsx
+│
+│── components/
+│   ├── StabilityCard.tsx
+│   ├── CycleTrends.tsx
+│   ├── BodyMetabolicCard.tsx
+│   ├── SymptomTrends.tsx
+│   └── LifestyleImpact.tsx
+│
+│── screens/
+│   └── InsightsScreen.tsx
+│
+│── constants/
+│   └── colors.ts
+│
+│── assets/
+│
+│── package.json
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## ⚙️ Installation & Setup
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Clone the repository
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+git clone https://github.com/your-username/insightshmi.git
+cd insightshmi
+```
 
-## Join the community
+### 2. Install dependencies
 
-Join our community of developers creating universal apps.
+```
+npm install
+npx expo install react-native-svg
+npm install react-native-chart-kit
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
-# insightshmi
+### 3. Start development server
+
+```
+npx expo start
+```
+
+---
+
+## 📱 Run on Device
+
+* Install **Expo Go** on your phone
+* Scan QR code from terminal
+
+OR
+
+```
+npx expo start --ios
+npx expo start --android
+```
+
+---
+
+## 🎨 UI Highlights
+
+* Soft pastel color palette (lavender, sage, coral)
+* Rounded cards with subtle shadows
+* Smooth bezier curves in charts
+* Pixel-refined spacing and layout
+* Clean typography hierarchy
+
+---
+
+## 🧠 Key Learnings
+
+* Component-based UI design in React Native
+* Implementing charts using SVG & chart libraries
+* Translating Figma design into code
+* Handling layout, spacing, and responsiveness
+* Debugging Expo & React Native issues
+
+---
+
+## 🔮 Future Improvements
+
+* 🔗 Connect to real health data APIs
+* 📊 Add animations (Reanimated)
+* 🌙 Dark mode support
+* 🧠 AI-driven insights
+
+---
+
+## 👩‍💻 Author
+
+**Tisha Kharade**
+
+---
+
+## ⭐ Acknowledgements
+
+* Design inspired by Figma UI concepts
+* Built as part of internship assignment
+
+---
+
+## 📌 Note
+
+This project focuses on **UI implementation and design accuracy**, not backend functionality.
