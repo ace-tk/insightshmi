@@ -28,46 +28,47 @@ export const StabilityCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 16,
-    padding: 20,
-    marginVertical: 10,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    marginVertical: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowRadius: 10,
+    elevation: 3,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#111',
+    color: '#1A1A1A',
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 16,
+    fontSize: 14,
+    color: '#757575',
+    lineHeight: 20,
+    marginBottom: 20,
   },
   graphPlaceholder: {
-    height: 120,
-    backgroundColor: '#E0D7FF', // Light purple
-    borderRadius: 12,
+    height: 140,
+    backgroundColor: '#F3EFFF', // Softer light purple
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   placeholderText: {
-    fontSize: 12,
-    color: '#6B52D1',
-    fontWeight: '500',
+    fontSize: 13,
+    color: '#7C4DFF',
+    fontWeight: '600',
   },
   scoreContainer: {
-    marginTop: 8,
+    marginTop: 4,
   },
   scoreText: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#007AFF', // Using a default iOS-style blue for the score
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#FF8A65', // Using consistent accent color
   },
 });

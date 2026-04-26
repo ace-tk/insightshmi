@@ -18,10 +18,12 @@ const InsightsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFA', // Slightly off-white background for depth
   },
   scrollContent: {
-    padding: 16,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 40,
   },
 });
 
