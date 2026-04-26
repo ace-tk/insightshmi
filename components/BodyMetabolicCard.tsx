@@ -1,8 +1,44 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+
+const screenWidth = Dimensions.get('window').width;
 
 export const BodyMetabolicCard = () => {
   const [activeTab, setActiveTab] = useState<'Monthly' | 'Weekly'>('Monthly');
+
+  const chartData = {
+    labels: activeTab === 'Monthly' ? ["Jan", "Feb", "Mar", "Apr"] : ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    datasets: [
+      {
+        data: activeTab === 'Monthly' ? [65, 64.5, 63.8, 63.2] : [63.5, 63.2, 63.4, 63.1, 63.2],
+        color: (opacity = 1) => `rgba(255, 138, 101, ${opacity})`, // Warm pink/red
+        strokeWidth: 3
+      }
+    ]
+  };
+
+  const chartConfig = {
+    backgroundColor: "#fff",
+    backgroundGradientFrom: "#fff",
+    backgroundGradientTo: "#fff",
+    decimalPlaces: 1,
+    color: (opacity = 1) => `rgba(255, 138, 101, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(117, 117, 117, ${opacity})`,
+    style: {
+      borderRadius: 16
+    },
+    propsForDots: {
+      r: "4",
+      strokeWidth: "2",
+      stroke: "#FF8A65"
+    },
+    propsForBackgroundLines: {
+      strokeDasharray: "",
+      stroke: "#f0f0f0",
+      strokeWidth: 1
+    }
+  };
 
   return (
     <View style={styles.card}>
@@ -28,8 +64,17 @@ export const BodyMetabolicCard = () => {
         </View>
       </View>
 
-      <View style={styles.graphPlaceholder}>
-        <Text style={styles.placeholderText}>Weight Trends Graph Placeholder</Text>
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={chartData}
+          width={screenWidth - 88}
+          height={160}
+          chartConfig={chartConfig}
+          bezier
+          withInnerLines={false}
+          withOuterLines={false}
+          style={styles.chartStyle}
+        />
       </View>
     </View>
   );
@@ -50,7 +95,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // Aligned center for better toggle positioning
+    alignItems: 'center',
     marginBottom: 24,
   },
   title: {
@@ -90,16 +135,11 @@ const styles = StyleSheet.create({
   activeToggleText: {
     color: '#1A1A1A',
   },
-  graphPlaceholder: {
-    height: 140,
-    backgroundColor: '#E3F2FD', // Softer light blue
-    borderRadius: 16,
-    justifyContent: 'center',
+  chartContainer: {
+    marginTop: 10,
     alignItems: 'center',
   },
-  placeholderText: {
-    fontSize: 13,
-    color: '#1976D2',
-    fontWeight: '600',
+  chartStyle: {
+    paddingRight: 40,
   },
 });
