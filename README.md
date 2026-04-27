@@ -4,6 +4,8 @@ A modern **health insights dashboard UI** built using **React Native (Expo)**.
 This project replicates a **Figma-based design** with custom charts, smooth layouts, and clean component architecture.
 
 ---
+## 🚀 Demo
+🎥 https://www.loom.com/share/b9d735a2c76949d79a7cfe2b1086ea63
 
 ## 🚀 Features
 
@@ -139,3 +141,4 @@ npx expo start --android
 ## 📌 Note
 
 This project focuses on **UI implementation and design accuracy**, not backend functionality.
+
