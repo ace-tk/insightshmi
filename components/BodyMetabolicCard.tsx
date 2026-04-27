@@ -26,16 +26,33 @@ export const BodyMetabolicCard = () => {
     transform: [{ translateX: togglePos.value * 76 }],
   }));
 
-  const chartData = {
-    labels: [" Jan", "Feb", "Mar", "Apr", "May"],
+  const animatedChartStyle = useAnimatedStyle(() => ({
+    opacity: chartOpacity.value,
+  }));
+
+  const monthlyData = {
+    labels: ["  Jan", "Feb", "Mar", "Apr", "May"],
     datasets: [
       {
         data: [35, 45, 38, 70, 55],
-        color: (opacity = 1) => `rgba(244, 143, 177, ${opacity})`, // Pink/Red line
+        color: (opacity = 1) => `rgba(244, 143, 177, ${opacity})`,
         strokeWidth: 3
       }
     ]
   };
+
+  const weeklyData = {
+    labels: ["  Mon", "Tue", "Wed", "Thu", "Fri"],
+    datasets: [
+      {
+        data: [65, 62, 68, 64, 66],
+        color: (opacity = 1) => `rgba(244, 143, 177, ${opacity})`,
+        strokeWidth: 3
+      }
+    ]
+  };
+
+  const chartData = activeTab === 'Monthly' ? monthlyData : weeklyData;
 
   const chartConfig = {
     backgroundColor: "#fff",
@@ -92,7 +109,7 @@ export const BodyMetabolicCard = () => {
             <Text style={styles.yLabel}>50</Text>
             <Text style={styles.yLabel}>25</Text>
           </View>
-          <View style={styles.chartContainer}>
+          <Animated.View style={[styles.chartContainer, animatedChartStyle]}>
             <LineChart
               data={chartData}
               width={screenWidth - 80}
@@ -106,7 +123,7 @@ export const BodyMetabolicCard = () => {
               style={styles.chart}
               getDotColor={() => '#fff'} // Ensure center is white
             />
-          </View>
+          </Animated.View>
         </View>
       </View>
     </View>
@@ -203,5 +220,6 @@ const styles = StyleSheet.create({
   },
   chart: {
     paddingRight: 10,
+    paddingLeft: 10,
   },
 });
