@@ -1,22 +1,32 @@
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, FlatList } from 'react-native';
 import Svg, { Rect, Defs, LinearGradient, Stop } from 'react-native-svg';
 import { Palette } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export const LifestyleImpact = () => {
-  const rows = [
-    { name: 'Sleep', colors: ['#D1C4E9', '#B39DDB'], filledCount: 7 },
-    { name: 'Hydrate', colors: ['#FFCDD2', '#EF9A9A'], filledCount: 3 },
-    { name: 'Caffeine', colors: ['#B2DFDB', '#80CBC4'], filledCount: 5 },
-    { name: 'Exercise', colors: ['#F8BBD0', '#F48FB1'], filledCount: 4 },
+  const [months, setMonths] = useState<number>(4);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const baseData = [
+    { name: 'Sleep', colors: ['#D1C4E9', '#B39DDB'], ratio: 0.75 },
+    { name: 'Hydrate', colors: ['#FFCDD2', '#EF9A9A'], ratio: 0.3 },
+    { name: 'Caffeine', colors: ['#B2DFDB', '#80CBC4'], ratio: 0.55 },
+    { name: 'Exercise', colors: ['#F8BBD0', '#F48FB1'], ratio: 0.7 },
   ];
-  const columns = 9;
+
+  const rows = baseData.map(item => ({
+    name: item.name,
+    colors: item.colors,
+    filledCount: Math.round(item.ratio * months)
+  }));
+      
+  const columns = months;
 
   const GradientSquare = ({ colors, isFilled }: { colors: string[], isFilled: boolean }) => {
     return (
       <View style={styles.squareContainer}>
-        <Svg width={28} height={28}>
+        <Svg width={28} height={28} viewBox="0 0 28 28">
           <Defs>
             <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0" stopColor={isFilled ? colors[0] : '#E0E0E0'} stopOpacity={isFilled ? 1 : 0.4} />
@@ -35,8 +45,11 @@ export const LifestyleImpact = () => {
       <View style={styles.card}>
         <View style={styles.header}>
           <Text style={styles.title}>Correlation Strength</Text>
-          <TouchableOpacity style={styles.dropdown}>
-            <Text style={styles.dropdownText}>4 months</Text>
+          <TouchableOpacity 
+            style={styles.dropdown}
+            onPress={() => setIsDropdownOpen(true)}
+          >
+            <Text style={styles.dropdownText}>{months} {months === 1 ? 'month' : 'months'}</Text>
             <IconSymbol name="chevron.down" size={14} color="#9E9E9E" />
           </TouchableOpacity>
         </View>
@@ -58,6 +71,35 @@ export const LifestyleImpact = () => {
           ))}
         </View>
       </View>
+
+      <Modal visible={isDropdownOpen} transparent animationType="fade">
+        <TouchableWithoutFeedback onPress={() => setIsDropdownOpen(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.dropdownMenu}>
+                <FlatList
+                  data={Array.from({ length: 12 }, (_, i) => i + 1)}
+                  keyExtractor={(item) => item.toString()}
+                  showsVerticalScrollIndicator={false}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity 
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setMonths(item);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      <Text style={[styles.dropdownItemText, months === item && styles.dropdownItemTextSelected]}>
+                        {item} {item === 1 ? 'month' : 'months'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };
@@ -130,5 +172,37 @@ const styles = StyleSheet.create({
   squareContainer: {
     width: 28,
     height: 28,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dropdownMenu: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    width: 200,
+    maxHeight: 300,
+    padding: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  dropdownItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  dropdownItemText: {
+    fontSize: 15,
+    color: '#333',
+    textAlign: 'center',
+  },
+  dropdownItemTextSelected: {
+    fontWeight: '700',
+    color: '#9575CD',
   },
 });

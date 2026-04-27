@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 24,
     paddingTop: 10,
-    paddingBottom: 60,
+    paddingBottom: 130, // Increased gap for bottom tab bar
   },
 });
 

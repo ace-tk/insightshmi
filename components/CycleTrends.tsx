@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Palette } from '@/constants/theme';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 
 export const CycleTrends = () => {
-  const cycleData = [
+  const [range, setRange] = useState<'firstHalf' | 'secondHalf'>('firstHalf');
+
+  const firstHalfData = [
     { month: 'Jan', days: 28, greenHeight: '35%', redHeight: '25%' },
     { month: 'Feb', days: 30, greenHeight: '45%', redHeight: '30%' },
     { month: 'Mar', days: 28, greenHeight: '30%', redHeight: '28%' },
@@ -12,6 +14,17 @@ export const CycleTrends = () => {
     { month: 'May', days: 28, greenHeight: '35%', redHeight: '26%' },
     { month: 'Jun', days: 28, greenHeight: '35%', redHeight: '28%' },
   ];
+
+  const secondHalfData = [
+    { month: 'Jul', days: 29, greenHeight: '40%', redHeight: '27%' },
+    { month: 'Aug', days: 31, greenHeight: '48%', redHeight: '29%' },
+    { month: 'Sep', days: 28, greenHeight: '32%', redHeight: '25%' },
+    { month: 'Oct', days: 30, greenHeight: '45%', redHeight: '30%' },
+    { month: 'Nov', days: 27, greenHeight: '30%', redHeight: '24%' },
+    { month: 'Dec', days: 29, greenHeight: '38%', redHeight: '26%' },
+  ];
+
+  const cycleData = range === 'firstHalf' ? firstHalfData : secondHalfData;
 
   return (
     <View style={styles.container}>
@@ -25,7 +38,10 @@ export const CycleTrends = () => {
           <View style={styles.gridLine} />
         </View>
 
-        <TouchableOpacity style={styles.arrowButton}>
+        <TouchableOpacity 
+          style={styles.arrowButton}
+          onPress={() => setRange('firstHalf')}
+        >
           <IconSymbol name="chevron.left" size={16} color="#9575CD" />
         </TouchableOpacity>
 
@@ -35,14 +51,14 @@ export const CycleTrends = () => {
               <Text style={styles.daysText}>{item.days}</Text>
               <View style={styles.pillBase}>
                 {/* Green Top Segment */}
-                <View style={[styles.segment, styles.greenSegment, { height: item.greenHeight }]}>
+                <View style={[styles.segment, styles.greenSegment, { height: item.greenHeight as any }]}>
                   <View style={styles.iconWrapper}>
                     <IconSymbol name="record.circle" size={12} color="rgba(255,255,255,0.9)" />
                   </View>
                 </View>
                 
                 {/* Red Bottom Segment */}
-                <View style={[styles.segment, styles.redSegment, { height: item.redHeight }]}>
+                <View style={[styles.segment, styles.redSegment, { height: item.redHeight as any }]}>
                   <IconSymbol name="drop.fill" size={10} color="rgba(255,255,255,0.9)" />
                 </View>
               </View>
@@ -51,7 +67,10 @@ export const CycleTrends = () => {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.arrowButton}>
+        <TouchableOpacity 
+          style={styles.arrowButton}
+          onPress={() => setRange('secondHalf')}
+        >
           <IconSymbol name="chevron.right" size={16} color="#9575CD" />
         </TouchableOpacity>
       </View>
